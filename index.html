@@ -208,7 +208,6 @@ tr.ld,tr.ld td{display:block;grid-area:auto;padding:0;border:0;background:none;b
 #dmp .dmk{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:10px}#dmp .dmk small{display:block;font-size:12px;color:var(--mut);margin-bottom:2px}#dmp .dmk strong{font-size:16px}
 #dmp .dmx{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:14px;color:var(--mut);margin-bottom:10px}#dmp .dmb{display:grid;gap:8px}#dmp .dmb button{width:100%;min-height:44px;font-size:15px}#panel:not([hidden]){z-index:42}
 .edmod{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}.edbox{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:18px;width:min(420px,100%);max-height:100%;overflow:auto;display:grid;gap:12px;box-shadow:0 18px 50px rgba(0,0,0,.45)}.edbox h3{margin:0;font-size:18px}.edbox .edf{display:grid;gap:12px;margin:0}.edbox .edf label{display:grid;gap:6px;font-size:13px;color:var(--mut)}.edbox .edf input{font-size:20px;padding:12px;text-align:center;width:100%;box-sizing:border-box}.edbox button{min-height:44px;font-size:15px}.edbox .st{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
-.spkl{display:grid;gap:6px;max-height:190px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:6px}.spkl button{text-align:left;min-height:40px;font-size:15px}.spkl button.on{border-color:var(--wa);font-weight:700}
 </style>
 <script>try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
@@ -598,8 +597,6 @@ function dmEntries(tab,all){
 }
 const isStk=s=>/stock|stok/i.test(s||'');
 const dmSpkList=()=>[...new Set(rows.map(r=>r.spk).filter(x=>x&&!isStk(x)))].sort((a,b)=>a.localeCompare(b,'id',{numeric:true}));
-function fillSpk(){const i=$('#dmspk'),l=$('#dmspkl');if(!i||!l)return;const v=i.value.trim(),q=v.toLowerCase(),a=dmSpkList().filter(x=>!q||x.toLowerCase().includes(q));
-  l.innerHTML=a.length?a.map(x=>`<button type="button" class="sm spk${x===v?' on':''}" data-spk="${esc(x)}">${esc(x)}</button>`).join(''):'<div class="note">Tidak ada SPK yang cocok.</div>'}
 async function dmKeluar(key,tgl,qty,spk){
   const e=dmEntries('in',true).find(x=>x.key===key),v=dmNew.get(key);if(!e||!v)return;
   const q=rnd(qty==null?e.jml:qty);if(!(q>0)||q>e.jml+1e-9)return;
@@ -651,11 +648,10 @@ function renderDm(){
     h+=`<div class="grp"><div class="gh"><h3>Pemesan: ${esc(pem)}</h3><span class="note">${a.length} barang</span></div>`+
     a.map(dmCard).join('')+'</div>';
   });
-  if(dmAsk!==null){const ae=dmEntries('in',true).find(x=>x.key===dmAsk);h+=`<div class="dmmod" id="dmmod" role="dialog" aria-modal="true" aria-labelledby="dmmt"><div class="dmbox"><h3 id="dmmt">Keluarkan barang</h3>${ae?`<div class="dmnm">${esc(ae.r.spec)}</div><div class="note">Jumlah ${esc(rnd(ae.jml))} ${esc(ae.r.sat)}${ae.tgl?', datang tgl '+esc(fmtD(ae.tgl)):''}</div>`:''}<label>Jumlah dikeluarkan (${esc(ae.r.sat)}, maks ${esc(rnd(ae.jml))})<input type="number" id="dmjl" min="0" max="${esc(ae.jml)}" step="any" inputmode="decimal" value="${esc(rnd(ae.jml))}"></label>${isStk(ae.r.spk)?`<label>Pilih SPK tujuan (ketik untuk mencari)<input id="dmspk" autocomplete="off" placeholder="Cari no. SPK" style="font-size:16px;text-align:left"></label><div id="dmspkl" class="spkl"></div>`:''}<label>Tanggal dikeluarkan (ketuk untuk memilih dari kalender)<input type="date" id="dmtg" value="${todayIso()}"></label><div class="note" id="dmte" style="color:var(--warn)"></div><div class="dmbb"><button class="sm primary" data-ok="${esc(dmAsk)}">Simpan</button><button class="sm" data-no="1">Batal</button></div></div></div>`}
-  p.innerHTML=h;fillSpk();
+  if(dmAsk!==null){const ae=dmEntries('in',true).find(x=>x.key===dmAsk);h+=`<div class="dmmod" id="dmmod" role="dialog" aria-modal="true" aria-labelledby="dmmt"><div class="dmbox"><h3 id="dmmt">Keluarkan barang</h3>${ae?`<div class="dmnm">${esc(ae.r.spec)}</div><div class="note">Jumlah ${esc(rnd(ae.jml))} ${esc(ae.r.sat)}${ae.tgl?', datang tgl '+esc(fmtD(ae.tgl)):''}</div>`:''}<label>Jumlah dikeluarkan (${esc(ae.r.sat)}, maks ${esc(rnd(ae.jml))})<input type="number" id="dmjl" min="0" max="${esc(ae.jml)}" step="any" inputmode="decimal" value="${esc(rnd(ae.jml))}"></label>${isStk(ae.r.spk)?`<label>Pilih SPK tujuan<select id="dmspk" style="width:100%;font-size:16px;padding:12px"><option value="">Pilih no. SPK</option>${dmSpkList().map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('')}</select></label>`:''}<label>Tanggal dikeluarkan (ketuk untuk memilih dari kalender)<input type="date" id="dmtg" value="${todayIso()}"></label><div class="note" id="dmte" style="color:var(--warn)"></div><div class="dmbb"><button class="sm primary" data-ok="${esc(dmAsk)}">Simpan</button><button class="sm" data-no="1">Batal</button></div></div></div>`}
+  p.innerHTML=h;
   if(dmAsk!==null){const i=$('#dmjl')||$('#dmtg');if(i){i.focus();try{i.select()}catch(x){}}}
 }
-$('#dmp').addEventListener('input',e=>{if(e.target.id==='dmspk')fillSpk()});
 $('#dm').onclick=()=>{dmOpen=!dmOpen;renderDm()};
 $('#dmp').addEventListener('click',e=>{
   const t=e.target;
@@ -669,7 +665,6 @@ $('#dmp').addEventListener('click',e=>{
     if(ae&&qv>ae.jml+1e-9){if(mm)mm.textContent='Jumlah melebihi yang ada. Maksimal '+rnd(ae.jml)+' '+ae.r.sat+'.';const j=$('#dmjl');if(j)j.focus();return}
     let spk='';if(ae&&isStk(ae.r.spk)){const sv=(($('#dmspk')||{}).value||'').trim();if(!sv||!dmSpkList().includes(sv)){if(mm)mm.textContent='Pilih SPK tujuan dari daftar.';const k=$('#dmspk');if(k)k.focus();return}spk=sv}
     const v=($('#dmtg')||{}).value,iso=isoRe.test(v||'')?v:'';if(!iso){const m=$('#dmte');if(m)m.textContent='Pilih tanggal dulu dari kalender.';const i=$('#dmtg');if(i)i.focus();return}dmKeluar(t.dataset.ok,iso,qv,spk)}
-  else if(t.dataset.spk!==undefined){const i=$('#dmspk');if(i){i.value=t.dataset.spk;fillSpk();const m=$('#dmte');if(m)m.textContent=''}}
   else if(t.dataset.back!==undefined)dmBalik(t.dataset.back);
   else if(t.dataset.wa!==undefined)addSel(+t.dataset.wa)
 });
