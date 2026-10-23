@@ -217,7 +217,7 @@ tr.ld,tr.ld td{display:block;grid-area:auto;padding:0;border:0;background:none;b
 <div class="wrap">
 <header>
   <div><h1>OUTSTANDING SIP BANGUNAN 2026</h1><div class="sub" id="info"></div></div>
-  <div class="hact"><button class="sm" id="wm" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Pesan WA <span class="cnt" id="wc" hidden>0</span></button><button class="sm" id="dm" type="button" aria-pressed="false">Daftar material/barang di gudang <span class="cnt" id="dc" hidden>0</span></button><button class="sm" id="th" type="button" aria-label="Ganti mode terang atau gelap"></button><button class="sm" id="me" hidden></button><span class="sub" id="upd"></span><button class="sm" id="nt" type="button" aria-pressed="false">🔕 Aktifkan notifikasi</button><button class="sm" id="ntt" type="button">Tes notifikasi</button></div>
+  <div class="hact"><button class="sm" id="wm" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Pesan WA <span class="cnt" id="wc" hidden>0</span></button><button class="sm" id="dm" type="button" aria-pressed="false">Daftar material/barang di gudang <span class="cnt" id="dc" hidden>0</span></button><button class="sm" id="th" type="button" aria-label="Ganti mode terang atau gelap"></button><button class="sm" id="me" hidden></button><span class="sub" id="upd"></span></div>
 </header>
 <div id="msg" role="status"></div>
 <section id="panel" class="card" hidden></section>
@@ -702,40 +702,24 @@ async function ntSub(){
   await ntCall({action:'subscribe',sub:s.toJSON()});
   try{localStorage.setItem('nt2','1')}catch(x){}
 }
-function ntUpd(){const b=$('#nt');if(!b)return;const on=ntOk()&&Notification.permission==='granted'&&(()=>{try{return localStorage.getItem('nt2')==='1'}catch(x){return false}})();b.setAttribute('aria-pressed',String(on));b.textContent=on?'🔔 Notifikasi aktif':'🔕 Aktifkan notifikasi'}
-async function ntToggle(){
-  const m=$('#msg');
-  if(!ntOk()){m.textContent='Notifikasi tidak didukung di perangkat ini.';return}
-  try{
-    if($('#nt').getAttribute('aria-pressed')==='true'){
-      const reg=await navigator.serviceWorker.getRegistration(),s=reg&&await reg.pushManager.getSubscription();
-      if(s){await ntCall({action:'unsubscribe',endpoint:s.endpoint});await s.unsubscribe()}
-      try{localStorage.removeItem('nt2')}catch(x){}
-      m.textContent='Notifikasi dimatikan di HP ini.';
-    }else{
-      const p=Notification.permission==='granted'?'granted':await Notification.requestPermission();
-      if(p!=='granted'){m.textContent='Izin notifikasi ditolak. Aktifkan di pengaturan aplikasi/HP.';ntUpd();return}
-      await ntSub();m.textContent='Notifikasi aktif di HP ini.';
-    }
-  }catch(x){m.textContent='Gagal mengatur notifikasi: '+((x&&x.message)||x)}
-  ntUpd();
+function ntInit(){
+  if(!ntOk())return;
+  const go=()=>ntSub().catch(()=>{});
+  if(Notification.permission==='granted'){go();return}
+  if(Notification.permission==='default'){
+    const ask=async()=>{
+      document.removeEventListener('click',ask,true);document.removeEventListener('touchend',ask,true);
+      try{if(await Notification.requestPermission()==='granted')go()}catch(x){}
+    };
+    document.addEventListener('click',ask,true);document.addEventListener('touchend',ask,true);
+  }
 }
-function ntInit(){ntUpd();if(ntOk()&&Notification.permission==='granted'){try{if(localStorage.getItem('nt2')==='1')ntSub().catch(()=>{})}catch(x){}}}
 function ntSend(title,body){
   if(!tok||!ntOk())return;
   (async()=>{try{const reg=await navigator.serviceWorker.getRegistration(),s=reg&&await reg.pushManager.getSubscription();
     await ntCall({action:'notify',own:s?s.endpoint:'',title:title+' - '+NT_LBL,body})}catch(x){}})();
 }
-async function ntTest(){
-  const m=$('#msg');
-  if(!ntOk()){m.textContent='Notifikasi tidak didukung di perangkat ini.';return}
-  m.textContent='Mengirim tes...';
-  try{
-    const r=await ntCall({action:'notify',own:'',title:'Tes notifikasi - '+NT_LBL,body:'Tes dari '+me});
-    m.textContent=r&&r.ok?('Tes dikirim ke '+r.sent+' perangkat'+(r.gone?' ('+r.gone+' kadaluarsa dihapus)':'')+(r.sent?'.':'. Belum ada HP yang terdaftar.')):('Gagal: '+((r&&r.error)||'tidak ada respon dari server'));
-  }catch(x){m.textContent='Gagal: '+((x&&x.message)||x)}
-}
-$('#nt').onclick=ntToggle;$('#ntt').onclick=ntTest;ntUpd();
+
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target&&(e.target.id==='dmtg'||e.target.id==='dmjl')){const b=document.querySelector('#dmmod [data-ok]');if(b)b.click()}});
 
 </script>
