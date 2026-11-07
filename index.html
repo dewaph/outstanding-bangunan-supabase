@@ -89,7 +89,7 @@ tr.ed{display:block;background-image:linear-gradient(rgba(59,130,246,.2),rgba(59
 :root{--bg:#e9eefa;--card:#fffefb;--ink:#14183a;--mut:#55608a;--line:#c5cde8;--acc:#1f3fbf;--accink:#fff;--wa:#138a4b;--warn:#b34700;--ok:#12804a;--hl:#e3e9fb;--inp:#fff;--band:#1f3fbf;--edge:#aab6e6;--sh:rgba(31,63,191,.16);--red:#d1322b;--carbon:#ffe36e;--rule:rgba(31,63,191,.07);--hd:"Zilla Slab",Georgia,serif}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1020;--card:#171b33;--ink:#e9ecfb;--mut:#9aa5d3;--line:#2d3560;--acc:#9db1ff;--accink:#0d1020;--wa:#2bc46b;--warn:#f0a35e;--ok:#5fcf93;--hl:#1e2445;--inp:#11152b;--band:#24339a;--edge:#343e75;--sh:rgba(0,0,0,.45);--red:#ff6b62;--rule:rgba(157,177,255,.05)}}
 :root[data-theme="dark"]{--bg:#0d1020;--card:#171b33;--ink:#e9ecfb;--mut:#9aa5d3;--line:#2d3560;--acc:#9db1ff;--accink:#0d1020;--wa:#2bc46b;--warn:#f0a35e;--ok:#5fcf93;--hl:#1e2445;--inp:#11152b;--band:#24339a;--edge:#343e75;--sh:rgba(0,0,0,.45);--red:#ff6b62;--rule:rgba(157,177,255,.05)}
-html,body{overflow-x:clip}
+body{overflow-x:clip}
 body{background-color:var(--bg);background-image:repeating-linear-gradient(0deg,transparent 0 31px,var(--rule) 31px 32px)}
 .wrap{--pad:16px;display:flex;flex-direction:column}
 header{order:0;position:relative;margin:calc(-1*var(--pad)) 0 22px;padding:calc(var(--pad) + 14px) 52px 36px 0;background:var(--band);box-shadow:0 0 0 100vmax var(--band);clip-path:inset(0 -100vmax)}
@@ -205,9 +205,20 @@ tr.ld,tr.ld td{display:block;grid-area:auto;padding:0;border:0;background:none;b
 #dmp .grp{border-top:0;padding:0;margin-bottom:18px}#dmp .gh{padding:6px 2px 8px}#dmp .gh h3{font-size:18px}
 #dmp .dmc{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:12px;padding:12px 14px;margin-bottom:12px}#dmp .dmc.out{border-left-color:var(--mut)}
 #dmp .dmh{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}#dmp .dmn{flex:none;min-width:26px;height:26px;border-radius:50%;background:var(--acc);color:var(--accink);font-weight:700;font-size:13px;display:grid;place-items:center}#dmp .dmnm{font-size:17px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
-#dmp .dmk{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:10px}#dmp .dmk small{display:block;font-size:12px;color:var(--mut);margin-bottom:2px}#dmp .dmk strong{font-size:16px}
+#dmp .dmk{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:10px}#dmp .dmk small{display:block;font-size:12px;color:var(--mut);margin-bottom:2px}#dmp .dmk strong{font-size:16px}#dmp .dmket{margin-bottom:10px}#dmp .dmket small{display:block;font-size:12px;color:var(--mut);margin-bottom:2px}#dmp .dmket strong{font-size:15px;font-weight:600;overflow-wrap:anywhere}
 #dmp .dmx{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:14px;color:var(--mut);margin-bottom:10px}#dmp .dmb{display:grid;gap:8px}#dmp .dmb button{width:100%;min-height:44px;font-size:15px}#panel:not([hidden]){z-index:42}
 .edmod{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}.edbox{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:18px;width:min(420px,100%);max-height:100%;overflow:auto;display:grid;gap:12px;box-shadow:0 18px 50px rgba(0,0,0,.45)}.edbox h3{margin:0;font-size:18px}.edbox .edf{display:grid;gap:12px;margin:0}.edbox .edf label{display:grid;gap:6px;font-size:13px;color:var(--mut)}.edbox .edf input{font-size:20px;padding:12px;text-align:center;width:100%;box-sizing:border-box}.edbox button{min-height:44px;font-size:15px}.edbox .st{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+
+/* ===== panel penuh layar (WA & daftar material): samakan dengan Manika ===== */
+#panel,#dmp{overscroll-behavior:contain}
+#panel:not([hidden]),#dmp:not([hidden]){border:0;border-radius:0;box-shadow:none}
+#panel .ph b,#dmp .ph b,#panel .gh h3,#dmp .gh h3{font-family:inherit}
+#panel .gh h3{font-size:16px}
+#panel .prev{border-radius:8px;border-left:0}
+:where(#panel,#dmp,.edmod) button{border:1px solid var(--line);border-radius:8px;font-weight:400}
+:where(#panel,#dmp,.edmod) .btn{border-width:1px;border-radius:8px}
+:where(#panel,#dmp,.edmod) input{border:1px solid var(--line);border-radius:8px}
+:where(#panel,#dmp,.edmod) select{border:1px solid var(--line);border-radius:8px}
 </style>
 <script>try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
@@ -631,6 +642,7 @@ function dmCard(e,i){
   const kel=o?'':(part?`Datang ${esc(rnd(sj))}, sudah dikeluarkan ${esc(rnd(sj-e.jml))} ${esc(r.sat)}`:'');
   return `<div class="dmc${o?' out':''}"><div class="dmh"><span class="dmnm">${i+1}. ${esc(r.spec)}</span></div>`+
   `<div class="dmk"><div><small>${o?'Jumlah dikeluarkan':part?'Sisa di daftar':'Jumlah datang'}</small><strong>${esc(rnd(e.jml))} ${esc(r.sat)}</strong>${!o&&part?`<small style="margin-top:8px">Sudah dikeluarkan</small><strong>${esc(rnd(sj-e.jml))} ${esc(r.sat)}</strong>`:''}${o?`<small style="margin-top:8px">No. SPK</small><strong>${esc(e.spk||r.spk)||'-'}</strong>`:''}</div><div><small>Tanggal datang</small><strong>${esc(fmtD(e.tgl))||'-'}</strong>${o?'':`<small style="margin-top:8px">No. SPK</small><strong>${esc(r.spk)||'-'}</strong>`}${o?`<small style="margin-top:8px">Tanggal dikeluarkan</small><strong>${esc(fmtD(o))}</strong>`:''}</div></div>`+
+  (r.ket?`<div class="dmket"><small>Keterangan</small><strong>${esc(r.ket)}</strong></div>`:'')+
   (o?`<div class="dmx">${tp}<span class="b ${r.st}">${DMST[r.st]}</span>${dari?`<span>${dari}</span>`:''}${sisa?`<span>${sisa}</span>`:''}</div>`:'')+
   `<div class="dmb">${o?`<button class="sm" data-back="${esc(e.key)}">Kembalikan ke daftar</button>`:`${dmWa(r)}<button class="sm primary" data-out="${esc(e.key)}">Keluarkan barang</button>`}</div></div>`;
 }
@@ -639,7 +651,8 @@ function renderDm(){
   document.body.style.overflow=(dmOpen||panelOpen||!pk.hidden)?'hidden':'';
   if(!dmOpen){p.hidden=true;return}
   p.hidden=false;
-  const names=[...new Set([...dmEntries('in',true),...dmEntries('out',true)].map(e=>e.r.pem).filter(Boolean))].sort();
+  const names=[...new Set(dmEntries(dmTab,true).map(e=>e.r.pem).filter(Boolean))].sort();
+  if(dmPem&&!names.includes(dmPem))dmPem='';
   const list=dmEntries(dmTab),g={};
   list.forEach(e=>(g[e.r.pem||'Tanpa pemesan']=g[e.r.pem||'Tanpa pemesan']||[]).push(e));
   let h=`<div class="ph"><b>${dmTab==='out'?'Barang dikeluarkan':'Daftar material/barang di gudang'}</b><span>${list.length} barang</span><button class="sm" id="dmcl" style="margin-left:auto">Tutup</button></div>`;
