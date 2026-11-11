@@ -2229,6 +2229,9 @@ const isDark=()=>{const t=document.documentElement.dataset.theme;return t?t==='d
 function thIcon(){$('#th').innerHTML=isDark()?ICO.sun:ICO.moon}
 $('#th').onclick=()=>{const n=isDark()?'light':'dark';document.documentElement.dataset.theme=n;try{localStorage.setItem('theme',n)}catch(x){}thIcon()};
 thIcon();
+/* Saat dibuka di dalam menu utama: ikuti tema menu, tombol tema sendiri disembunyikan */
+window.addEventListener('message',e=>{const d=e.data;if(e.source===window.parent&&d&&d.type==='theme'&&(d.theme==='dark'||d.theme==='light')){document.documentElement.dataset.theme=d.theme;thIcon()}});
+if(window.parent!==window)$('#th').style.display='none';
 showMe();
 $('#tb').innerHTML='<tr class="ld"><td colspan="12"><div class="ldh" role="status"><p>Memuat data dari server...</p></div></td></tr>';
 function hideLdr(){if(!me){$('#tb').innerHTML='';openPick()}}
