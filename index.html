@@ -1850,6 +1850,50 @@ tr.ld, tr.ld td {
   #dmp .dmbox { padding: 18px 16px; max-height: 92vh; max-height: 92dvh; }
   #dmp .dmbb button { white-space: normal; }
 }
+
+/* ===== POPUP NOTIFIKASI BARANG MASUK PANEL WA ===== */
+#wtoast {
+  position: fixed;
+  left: 50%;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  transform: translate(-50%, -24px) scale(.97);
+  z-index: 9999;
+  width: min(420px, calc(100% - 28px));
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px 16px;
+  border-radius: 18px;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--wa);
+  box-shadow: 0 20px 38px -6px rgba(15,23,42,.28), 0 8px 16px -4px rgba(15,23,42,.12);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity .22s ease, transform .28s cubic-bezier(.16,1,.3,1);
+}
+#wtoast.show { opacity: 1; transform: translate(-50%, 0) scale(1); pointer-events: auto; }
+#wtoast.dup { border-left-color: var(--warn); }
+#wtoast .wt-ic { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--wa); color: #fff; }
+#wtoast.dup .wt-ic { background: var(--warn); }
+#wtoast .wt-ic svg { width: 24px; height: 24px; }
+#wtoast .wt-tx { min-width: 0; flex: 1; }
+#wtoast .wt-t { font-size: 15.5px; font-weight: 800; line-height: 1.25; }
+#wtoast .wt-n { margin-top: 3px; font-size: 13.5px; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+#wtoast .wt-d { margin-top: 3px; font-size: 12.5px; color: var(--mut); line-height: 1.35; }
+#wtoast .wt-b { flex: none; border: 0; cursor: pointer; font: inherit; font-size: 13px; font-weight: 700; padding: 10px 14px; border-radius: 12px; min-height: 40px; background: var(--wa); color: #fff; }
+#wtoast.dup .wt-b { background: var(--warn); }
+#wtoast .wt-bar { position: absolute; left: 0; bottom: 0; height: 4px; width: 100%; background: var(--wa); opacity: .55; transform-origin: left; }
+#wtoast.dup .wt-bar { background: var(--warn); }
+#wtoast.show .wt-bar { animation: wtbar var(--wt-dur, 3.6s) linear forwards; }
+@keyframes wtbar { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) {
+  #wtoast { transition: opacity .15s ease; }
+  #wtoast.show .wt-bar { animation: none; }
+}
 </style>
 <script>try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
@@ -2059,9 +2103,34 @@ async function writeRow(r,stages){
   if(add.length)await sb('b_kedatangan',{m:'POST',b:add.map(x=>({item_id:r.id,tgl:x.tgl||null,jumlah:x.jml,oleh:x.by||me||null}))});
   await refreshRow(r.id);lastRev=await getRev();
 }
+let wtT=0;
+const WT_OK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+WT_INFO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6M12 7h.01"/></svg>';
+function wToast(o){
+  let t=document.getElementById('wtoast');
+  if(!t){t=document.createElement('div');t.id='wtoast';t.setAttribute('role','status');t.setAttribute('aria-live','polite');
+    t.addEventListener('click',()=>{
+      clearTimeout(wtT);t.classList.remove('show');
+      if(panelOpen)return;
+      const open=()=>{panelOpen=true;renderPanel()};
+      if(dmOpen){dmAsk=null;dmOpen=false;renderDm();setTimeout(open,320)}
+      else open()
+    });
+    document.body.appendChild(t)}
+  const dur=o.btn?4.6:3.6;
+  t.className=o.dup?'dup':'';
+  t.style.setProperty('--wt-dur',dur+'s');
+  t.innerHTML=`<div class="wt-ic">${o.dup?WT_INFO:WT_OK}</div><div class="wt-tx"><div class="wt-t">${esc(o.title)}</div><div class="wt-n">${esc(o.name)}</div><div class="wt-d">${esc(o.desc)}</div></div>${o.btn?'<button class="wt-b" type="button">Buka</button>':''}<div class="wt-bar"></div>`;
+  void t.offsetWidth;t.classList.add('show');
+  clearTimeout(wtT);wtT=setTimeout(()=>t.classList.remove('show'),dur*1000);
+}
 function addSel(id,quiet){
   const r=R.get(id);if(!r||r.jml===null)return;
-  sel.set(id,true);if(!quiet)panelOpen=true;renderPanel();
+  const dup=sel.has(id);
+  sel.set(id,true);renderPanel();
+  const n=sel.size;
+  wToast(dup?{dup:1,title:'Barang ini sudah ada di daftar',name:r.spec,desc:'Tidak perlu ditambah lagi. Total '+n+' barang. Ketuk untuk membuka.',btn:!panelOpen}
+    :{title:'Berhasil ditambahkan',name:r.spec,desc:'Masuk ke daftar pesan WhatsApp. Total '+n+' barang. Ketuk untuk membuka.',btn:!panelOpen});
 }
 const em=t=>{const m=$('#e-m');if(m)m.textContent=t};
 async function save(id){
@@ -2151,7 +2220,11 @@ P.addEventListener('click',e=>{
     try{navigator.clipboard.writeText(txt).then(done,()=>{})}catch(x){}
   }
   else if(t.classList.contains('wa')&&t.classList.contains('off')){e.preventDefault();t.closest('.grp').querySelector('.hp').focus()}
-  else if(t.closest('a.wa')){const a=t.closest('a.wa');if(/^https:\/\/wa\.me\//.test(a.href))markSent(a.closest('.grp'))}
+  else if(t.closest('a.wa')){const a=t.closest('a.wa');if(/^https:\/\/wa\.me\//.test(a.href)){
+    e.preventDefault();
+    const w=window.open(a.href,'_blank','noopener');
+    if(!w)location.href=a.href;
+    markSent(a.closest('.grp'))}}
 });
 
 const USERS=['Dewa','Afga','Daryanto','Wartono'],COL=['#dc2626','#2563eb','#d97706','#059669'];
@@ -2176,7 +2249,7 @@ async function loadWa(){
 async function markSent(b){
   const ids=[...b.querySelectorAll('.it')].map(e=>+e.dataset.id),rs=[];
   ids.forEach(id=>{const r=R.get(id);if(!r)return;waSent.set(id,{spec:r.spec,cur:r.cur,by:me});rs.push({item_id:id,jumlah:r.cur,oleh:me||null})});
-  renderTable();setTimeout(()=>{ids.forEach(id=>sel.delete(id));if(!sel.size)panelOpen=false;renderPanel()},300);if(!rs.length)return;
+  const sy=window.scrollY;renderTable();window.scrollTo(0,sy);setTimeout(()=>{ids.forEach(id=>sel.delete(id));if(!sel.size)panelOpen=false;renderPanel();window.scrollTo(0,sy)},300);if(!rs.length)return;
   try{await sb('b_wa_terkirim',{m:'POST',b:rs});lastRev=await getRev()}catch(e){$('#msg').textContent='Status terkirim belum tersimpan: '+errMsg(e)}
 }
 let sel1='',pinHas=false,started=false,ticking=false;
@@ -2338,7 +2411,7 @@ $('#dm').onclick=()=>{dmOpen=!dmOpen;renderDm()};
 $('#dmp').addEventListener('click',e=>{
   const t=e.target;
   if(t.id==='dmcl'){dmOpen=false;renderDm()}
-  else if(t.dataset.tab){dmTab=t.dataset.tab;dmAsk=null;renderDm()}
+  else if(t.dataset.tab){dmTab=t.dataset.tab;dmAsk=null;renderDm();$('#dmp').scrollTop=0}
   else if(t.dataset.out!==undefined){dmAsk=t.dataset.out;renderDm()}
   else if(t.dataset.no){dmAsk=null;renderDm()}
   else if(t.id==='dmmod'){dmAsk=null;renderDm()}
@@ -2353,6 +2426,10 @@ $('#dmp').addEventListener('click',e=>{
 $('#dmp').addEventListener('change',e=>{if(e.target.id==='dmsel'){dmPem=e.target.value;dmAsk=null;renderDm()}else if(e.target.id==='dmwa'){dmBelum=e.target.value;dmAsk=null;renderDm()}});
 $('#dmp').addEventListener('input',e=>{if(e.target.id==='dmq'){dmQ=e.target.value;dmAsk=null;renderDm();const q=$('#dmq');if(q){q.focus();const n=q.value.length;try{q.setSelectionRange(n,n)}catch(x){}}}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dmOpen&&pk.hidden){if(dmAsk!==null)dmAsk=null;else dmOpen=false;renderDm()}});
+
+/* Jaga posisi scroll panel saat dirender ulang */
+{const keep=(id,fn)=>function(){const el=$(id),t=el.scrollTop;fn.apply(this,arguments);if(!el.hidden)el.scrollTop=t};
+renderDm=keep('#dmp',renderDm);renderPanel=keep('#panel',renderPanel)}
 
 /* Tombol back HP: menutup lapisan teratas (popup/panel), tidak langsung keluar halaman */
 let hd=0,hSkip=false;
